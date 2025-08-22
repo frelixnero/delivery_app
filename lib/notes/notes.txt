@@ -1,0 +1,137 @@
+// lib/components/navigation_tile.dart (Revised)
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../themes/theme_provider.dart';
+
+class NavigationTile extends StatelessWidget {
+  final String title; // Added for text label
+  final IconData iconData;
+  final VoidCallback onTap; // Changed to VoidCallback for clarity
+  final bool isSelected; // New parameter to indicate selection
+
+  const NavigationTile({
+    super.key,
+    required this.title, // Required title
+    required this.iconData,
+    required this.onTap,
+    this.isSelected = false, // Default to false
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Determine colors based on theme and selection state
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final bool isDarkMode = themeProvider.isDarkMode;
+
+    final Color backgroundColor = isSelected
+        ? Theme.of(context).colorScheme.primary.withOpacity(0.7) // Highlight selected
+        : (isDarkMode ? Theme.of(context).colorScheme.secondary : Theme.of(context).cardColor); // Neutral background
+    
+    final Color iconTextColor = isSelected
+        ? Colors.white // White icon/text for selected
+        : (isDarkMode ? Colors.white70 : Colors.black87); // Default icon/text
+
+    return Padding( // Added Padding to create space between tiles
+      padding: const EdgeInsets.symmetric(vertical: 8.0), // Spacing between tiles
+      child: Material( // Use Material for elevation and inkwell effect
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell( // Provides ripple effect on tap
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // Adjust padding as needed
+            child: Row(
+              children: [
+                Icon(iconData, color: iconTextColor, size: 24),
+                const SizedBox(width: 16), // Space between icon and text
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: iconTextColor,
+                    fontSize: 16,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+```dart
+// lib/components/side_menu_widget.dart (Revised)
+import 'package:flutter/material.dart';
+import 'package:bus_tracker/components/navigation_tile.dart'; // Ensure correct import
+
+class SideMenuWidget extends StatelessWidget {
+  final int selectedIndex;
+  final ValueChanged<int> onItemSelected;
+
+  const SideMenuWidget({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 12), // Adjusted vertical padding
+      child: Column( // Use Column as the top-level widget
+        children: [
+          // Optional: Add a logo or app name header
+          // const Padding(
+          //   padding: EdgeInsets.only(bottom: 30.0, top: 20.0),
+          //   child: Text(
+          //     'BUS TRACKER',
+          //     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          //   ),
+          // ),
+          
+          Expanded( // <-- CRITICAL FIX: Wrap ListView with Expanded
+            child: ListView(
+              // shrinkWrap: true, // You might still need this if the ListView is inside another scrollable.
+                               // However, the Expanded takes precedence for height constraint.
+              // primary: false, // If nested in another scrollable, set primary to false.
+              children: [
+                NavigationTile(
+                  title: 'Map', // Added title
+                  iconData: Icons.map,
+                  onTap: () => onItemSelected(0),
+                  isSelected: selectedIndex == 0, // Pass isSelected
+                ),
+                NavigationTile(
+                  title: 'Settings', // Added title
+                  iconData: Icons.settings,
+                  onTap: () => onItemSelected(1),
+                  isSelected: selectedIndex == 1, // Pass isSelected
+                ),
+                NavigationTile(
+                  title: 'Test App', // Added title
+                  iconData: Icons.shopping_cart, // Changed to shopping_cart as per previous code
+                  onTap: () => onItemSelected(2),
+                  isSelected: selectedIndex == 2, // Pass isSelected
+                ),
+                NavigationTile(
+                  title: 'Profile', // Added title
+                  iconData: Icons.person,
+                  onTap: () => onItemSelected(3),
+                  isSelected: selectedIndex == 3, // Pass isSelected
+                ),
+                // Add more NavigationTiles as needed
+              ],
+            ),
+          ),
+          // Optional: Add a footer widget here, outside the Expanded ListView
+          // const Padding(
+          //   padding: EdgeInsets.only(top: 20.0),
+          //   child: Text('Version 1.0'),
+          // ),
+        ],
+      ),
+    );
+  }
+}
