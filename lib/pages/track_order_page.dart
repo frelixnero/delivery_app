@@ -192,7 +192,7 @@ class _TrackOrderPageState extends State<TrackOrderPage> {
           orderTracking.snapshots() == ConnectionState.waiting
               ? Center(child: CircularProgressIndicator(color: Colors.amber))
               : GoogleMap(
-                mapType: MapType.terrain,
+                mapType: MapType.hybrid,
                 onMapCreated: (controller) {
                   googleMapController = controller;
                 },

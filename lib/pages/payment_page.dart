@@ -7,7 +7,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../components/my_button.dart';
 import '../../pages/delivery_progress_page.dart';
 import '../components/my_receipt.dart';
-import '../navigator_key/navigator.dart';
 import '../services/auth/auth_service.dart';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
@@ -46,7 +45,6 @@ class _PaymentPageState extends State<PaymentPage> {
       context,
       listen: false,
     );
-
     double price = resturantProvider.getTotalPrice();
     int formattedPrice = ((price)).toInt();
     return formattedPrice;
@@ -62,7 +60,9 @@ class _PaymentPageState extends State<PaymentPage> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000//paystack/verify/8r2988273'),
+        Uri.parse(
+          'https://paystack-api-vblu.onrender.com/paystack/verify/8r2988273',
+        ),
       ); // Replace with your URL
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -76,52 +76,43 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   void userTapped() async {
-    print(
-      'Sending R E Q U E S T to: http://192.168.96.153:8000/paystack/initialize/',
-    );
     showDialog(
       context: context,
       builder: (context) {
         return const Center(child: CircularProgressIndicator());
       },
     );
-    if (userId == AuthService().getCurrentUser()!.uid) {
-      final dynamic url;
-      url = Uri.parse('http://192.168.96.153:8080/paystack/initialize/');
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"email": useremail!, "amount": _formatPrice()}),
+
+    try {
+      final url = Uri.parse(
+        'https://paystack-api-vblu.onrender.com/paystack/initialize/',
       );
-      print('Request headers: ${response.request?.headers}');
-      print(
-        'Request body: ${jsonEncode({"email": useremail!, "amount": _formatPrice()})}',
-      );
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      final response = await http
+          .post(
+            url,
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({"email": useremail!, "amount": _formatPrice()}),
+          )
+          .timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final Uri checkoutUri = Uri.parse(data["data"]["authorization_url"]);
-
-        try {
-          if (await canLaunchUrl(checkoutUri)) {
-            await launchUrl(checkoutUri, mode: LaunchMode.externalApplication);
-            // Registration successful: Dismiss the loading dialog
-            NavigationService.navigatorKey.currentState!.pop();
-          } else {
-            throw 'Could not launch $checkoutUri';
-          }
-        } catch (e) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text("Error launching URL: $e")));
+        if (await canLaunchUrl(checkoutUri)) {
+          await launchUrl(checkoutUri, mode: LaunchMode.externalApplication);
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Payment initialization failed")),
         );
       }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    } finally {
+      // Always dismiss loading dialog
+      Navigator.of(context).pop();
     }
   }
 
@@ -131,7 +122,7 @@ class _PaymentPageState extends State<PaymentPage> {
     ); // Log the start
 
     final url = Uri.parse(
-      'http://192.168.96.153:8080/paystack/verify/$reference',
+      'https://paystack-api-vblu.onrender.com/paystack/verify/$reference',
     );
 
     print("Verification URL: $url"); // Log the URL

@@ -151,83 +151,12 @@ class _FoodPageState extends State<FoodPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    // Add to cart () => addToCart(widget.food, widget.selectedAddon)
-                    // GestureDetector(
-                    //   onTap: () => addToCart(widget.food, widget.selectedAddon),
-                    //   child: Container(
-                    //     margin: EdgeInsets.only(left: 10),
-                    //     padding: EdgeInsets.all(10),
-                    //     decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         color: Colors.orange.shade500,
-                    //         width: 1,
-                    //       ),
-                    //       borderRadius: BorderRadius.circular(25),
-                    //     ),
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         Icon(
-                    //           Icons.shopping_cart,
-                    //           color: Colors.orange.shade500,
-                    //         ),
-                    //         Text(
-                    //           "Add to cart",
-                    //           style: TextStyle(
-                    //             color: Colors.orange.shade500,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.bold,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                     ReflexButton(
                       onTap: () => addToCart(widget.food, widget.selectedAddon),
                       title: "Add to Cart",
                       btnIcon: Icons.shopping_cart,
                     ),
 
-                    // go to check out
-                    // GestureDetector(
-                    //   onTap:
-                    //       () => Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(builder: (context) => CartPage()),
-                    //       ),
-                    //   child: Container(
-                    //     margin: EdgeInsets.only(left: 10),
-                    //     padding: EdgeInsets.symmetric(
-                    //       horizontal: 30,
-                    //       vertical: 10,
-                    //     ),
-                    //     decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         color: Colors.orange.shade500,
-                    //         width: 1.5,
-                    //       ),
-                    //       borderRadius: BorderRadius.circular(25),
-                    //       color: Colors.orange.shade500,
-                    //     ),
-                    //     child: Row(
-                    //       mainAxisAlignment: MainAxisAlignment.center,
-                    //       children: [
-                    //         Text(
-                    //           "Checkout",
-                    //           style: TextStyle(
-                    //             color:
-                    //                 Theme.of(
-                    //                   context,
-                    //                 ).colorScheme.primaryContainer,
-                    //             fontSize: 18,
-                    //             fontWeight: FontWeight.bold,
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                     ReflexButton(
                       onTap:
                           () => Navigator.push(

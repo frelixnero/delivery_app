@@ -1,5 +1,6 @@
 import 'package:delivery_app/components/my_receipt.dart';
 import 'package:delivery_app/models/resturant.dart';
+import 'package:delivery_app/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../navigator_key/navigator.dart';
@@ -43,8 +44,11 @@ class _DeliveryProgressPageState extends State<DeliveryProgressPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Order placed successfully!')),
               );
-              Navigator.pushReplacementNamed(context, "/auth_gate");
-              clearCartAfterPayment();
+              // Navigator.pushReplacementNamed(context, "/auth_gate");
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => HomePage()),
+                (route) => false,
+              );
 
               clearCartAfterPayment();
             } catch (e) {
